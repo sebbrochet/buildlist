@@ -15,7 +15,7 @@ Requirements:
 * pyyaml library
 
 Installation:
--------------a
+-------------
 * pip install -r requirements.txt
 
 usage
