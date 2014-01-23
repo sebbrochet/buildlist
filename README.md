@@ -3,7 +3,7 @@ buildlist
 
 Tool to display ordered list of builds to launch in order to make a package, based on dependencies between packages
 
-Dependencies are described with a file in YAML format, see [https://github.com/sebbrochet/buildlist/blob/master/sample.yml](sample.yml) file.
+Dependencies are described with a file in YAML format, see [sample.yml](https://github.com/sebbrochet/buildlist/blob/master/sample.yml) file.
 
 And ordered list of build for a specific package can be requested as follow:
 ```
