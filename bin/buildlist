@@ -1,0 +1,105 @@
+#!/usr/bin/env python
+
+import yaml
+
+def load_graph(filename):
+    import yaml
+
+    graph = None
+
+    f = file(filename, "r")
+
+    try:
+        graph = yaml.load(f)
+    except Exception, e:
+        print "Error while interpreting graph configuration: %s" % filename
+        print "Exception: %s" % e
+
+    f.close()
+
+    return graph
+
+def get_package_list(graph, package_name, graph_level):
+    if not package_name in graph:
+       print "Error: package not found: %s" % package_name
+       return False, []
+
+    if not package_name in graph_level:
+       graph_level[package_name] = 1
+
+    parent_level = graph_level[package_name]
+
+    package_list = graph[package_name]
+
+    if package_list:
+       sub_package_list = []
+
+       for package in package_list:
+          if not package in graph_level:
+             graph_level[package] = 1
+
+          graph_level[package] += parent_level
+
+          is_ok, l = get_package_list(graph, package, graph_level)
+
+	  if not is_ok:
+             break
+
+          if l:
+             sub_package_list.extend(l)
+             sub_package_list = list(set(sub_package_list))
+
+       package_list.extend(sub_package_list) 
+
+    return True, package_list
+   
+def list_from_graph_level(graph_level):
+    l = [(level, package_name) for (package_name, level) in graph_level.iteritems()]
+    l.sort()
+    l = l[::-1]
+
+    return [ item[1]  for item in l]  
+
+def main():
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Display dependencies for a package.')
+    parser.add_argument('-g', '--graph', type=str, help="Graph file to use")
+    parser.add_argument('-p', '--package', type=str, help="Package to look for")
+    parser.add_argument('--v', action='version', help="Print program version and exit.", version='%(prog)s 0.1.0 (20140122)')
+    args = parser.parse_args()
+
+    graph_file = args.graph
+    package_name = args.package
+
+    if not graph_file:
+        print "Error: graph filename should be specified."
+        print "Please use -g or --graph parameter to define it."
+        return
+
+    if not package_name:
+        print "Error: package name should be specified."
+        print "Please use -p or --package parameter to define it."
+        return
+
+    graph = load_graph(graph_file)    
+
+    if not graph:
+       return 1
+
+    if package_name in graph:
+        graph_level = {}
+        is_ok, _  = get_package_list(graph, package_name, graph_level)
+
+        if not is_ok:
+           return 1
+
+        ordered_package_list = list_from_graph_level(graph_level)
+        print ','.join(ordered_package_list)
+    else:
+        print "Error: no package named %s" % package_name
+        return 1
+
+if __name__ == '__main__':
+    main()
+

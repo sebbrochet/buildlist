@@ -1,0 +1,14 @@
+---
+# package1 depends on package2 and package3
+package1:
+  - package2
+  - package3
+
+# package2 depends only on package4
+package2:
+  - package4
+
+# package3 and package4 don't depend on any other packages
+package3: []
+package4: []
+
