@@ -8,6 +8,7 @@ And ordered list of build for a specific package can be requested as folow
 ```
 # buildlist -g sample.yml -p package1
 package4,package3,package2,package1
+```
 
 Requirements:
 ------------
@@ -21,6 +22,7 @@ Installation:
 usage
 -----
 
+```
 usage: buildlist [-h] [-g GRAPH] [-p PACKAGE] [--v]
 
 Display dependencies for a package.
@@ -32,3 +34,5 @@ optional arguments:
   -p PACKAGE, --package PACKAGE
                         Package to look for
   --v                   Print program version and exit.
+```
+
